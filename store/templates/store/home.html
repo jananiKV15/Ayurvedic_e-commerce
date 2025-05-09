@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayurveda Store</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        
+        .navbar {
+            background-color: #f3f5f0; 
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            color: #2e7d32 !important; /* Earthy green */
+            font-size: 1.5rem;
+        }
+        .nav-link {
+            color: #424242 !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #2e7d32 !important; /* Green on hover */
+        }
+        .nav-link.active {
+            color: #2e7d32 !important;
+            border-bottom: 2px solid #2e7d32;
+        }
+        .dropdown-menu {
+            background-color: #f5f5f0;
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .dropdown-item {
+            color: #424242;
+        }
+        .dropdown-item:hover {
+            background-color: #e8f5e9; /* Light green */
+            color: #2e7d32;
+        }
+        /* Search Bar */
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .search-icon {
+            cursor: pointer;
+            color: #424242;
+            font-size: 1.2rem;
+        }
+        .search-input {
+            width: 0;
+            padding: 0;
+            border: none;
+            border-bottom: 1px solid #2e7d32;
+            background: transparent;
+            transition: width 0.3s ease;
+            outline: none;
+        }
+        .search-input.active {
+            width: 200px;
+            padding: 5px 10px;
+        }
+        /* Cart Icon */
+        .cart-icon {
+            position: relative;
+        }
+        .cart-icon .badge {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background-color: #2e7d32;
+            color: rgb(255, 255, 255);
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 50%;
+        }
+        /* Responsive adjustments */
+        @media (max-width: 991px) {
+            .navbar-nav {
+                text-align: center;
+            }
+            .search-input.active {
+                width: 100%;
+                margin: 10px 0;
+            }
+        }
+       
+        .category-card img {
+            height: 150px;
+            object-fit: cover;
+        }
+        .product-card img {
+            height: 200px;
+            object-fit: cover;
+        }
+        .carousel-item img {
+            height: 500px;
+            object-fit: cover;
+        }
+.footer-links {
+  background-color: #afeac3; 
+  padding-top: 50px;
+  padding-bottom: 50px;
+  margin-top: 30px;
+}
+
+.footer-heading {
+  color: #2d8340;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.footer-link {
+  color: #38bd41;
+  font-size: 1rem;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 10px;
+  transition: color 0.3s, padding-left 0.3s;
+}
+
+.footer-link:hover {
+  color: #234a65; 
+  padding-left: 10px;
+}
+
+.footer-link:focus {
+  outline: none;
+  color: #29b941; 
+}
+
+.footer-link:active {
+  color: #29b94f;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 767px) {
+  .footer-links .row {
+    text-align: center;
+  }
+  .footer-links .col-md-4 {
+    margin-bottom: 30px;
+  }
+}
+
+        
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'home' %}"><h4>Ayurveda Store</h4></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-center">
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">
+            <i class="fas fa-home me-1"></i> Home
+          </a>
+        </li>
+        
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="{% url 'category' %}" role="button" data-bs-toggle="dropdown">
+            Shop
+          </a>
+          <ul class="dropdown-menu">
+            {% for category in categories %}
+              <li><a class="dropdown-item" href="{% url 'category_detail' category.id %}">{{ category.name }}</a></li>
+            {% endfor %}
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+        </li>
+        <li class="nav-item cart-icon">
+          <a class="nav-link" href="{% url 'cart' %}">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="badge">0</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <form action="{% url 'search' %}" method="get" class="d-flex align-items-center">
+            <input class="form-control me-2" type="search" name="query" placeholder="Search..." />
+            <button class="btn btn-outline-success" type="submit">Go</button>
+          </form>
+        </li>
+        {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#"><i class="fas fa-user me-1"></i>{{ user.username }}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-1"></i>Logout</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt me-1"></i>Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'register' %}"><i class="fas fa-user-plus me-1"></i>Register</a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Carousel -->
+<div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    {% for banner in banners %}
+      <div class="carousel-item {% if forloop.first %}active{% endif %}">
+        <img src="{% if banner.image %}{{ banner.image.url }}{% else %}/path/to/default/banner.jpg{% endif %}" class="d-block w-100" alt="{{ banner.title }}">
+      </div>
+    {% endfor %}
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+</div>
+
+<!-- Categories Section -->
+<div class="container my-5">
+  <h2 class="text-center mb-4">Explore Our Collections </h2>
+  <div class="row">
+    {% for category in categories %}
+      <div class="col-md-4 mb-6">
+        <div class="card category-card">
+          <img src="{% if category.image %}{{ category.image.url }}{% else %}/path/to/default/category.jpg{% endif %}" class="card-img-top" alt="{{ category.name }}">
+          <div class="card-body text-center">
+            <h5 class="card-title">{{ category.name }}</h5>
+            <a href="{% url 'category_detail' category.id %}" class="btn btn-primary">View Products</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- category_detail.html -->
+<div class="container my-5">
+  <h2 class="text-center mb-4">{{ category.name }} </h2>
+  <div class="row">
+    {% for product in products %}
+      <div class="col-md-3 mb-4">
+        <div class="card product-card">
+          <img src="{% if product.image %}{{ product.image.url }}{% else %}/path/to/default/product.jpg{% endif %}" class="card-img-top" alt="{{ product.name }}">
+          <div class="card-body text-center">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <p class="card-text">₹{{ product.price }}</p>
+            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-success">
+              <i class="fas fa-cart-plus me-1"></i> Add to Cart
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+
+<!-- Featured Products Section -->
+<div class="container my-5">
+  <h2 class="text-center mb-4">Featured Products</h2>
+  <div class="row">
+    {% for product in featured_products %}
+      <div class="col-md-3 mb-4">
+        <a href="{% url 'product_detail' product.id %}" style="text-decoration: none; color: inherit;">
+          <div class="card product-card h-100">
+            <img src="{% if product.image %}{{ product.image.url }}{% else %}/path/to/default/product.jpg{% endif %}" class="card-img-top" alt="{{ product.name }}">
+            <div class="card-body text-center">
+              <h5 class="card-title">{{ product.name }}</h5>
+              <p class="card-text text-success">₹{{ product.price }}</p>
+              <a href="{% url 'add_to_cart' product.id %}" class="btn btn-success">
+                <i class="fas fa-cart-plus me-1"></i> Add to Cart
+            </a>
+            </div>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+<!-- Footer Links Section -->
+<div class="container-fluid footer-links py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <h5 class="footer-heading">Shop</h5>
+        <ul class="list-unstyled">
+          <li><a href="#" class="footer-link">Herbal Supplements</a></li>
+          <li><a href="#" class="footer-link">Skincare</a></li>
+          <li><a href="#" class="footer-link">Haircare</a></li>
+          <li><a href="#" class="footer-link">Wellness</a></li>
+          <li><a href="#" class="footer-link">Teas & Tonics</a></li>
+        </ul>
+      </div>
+
+      <div class="col-md-4">
+        <h5 class="footer-heading">Help</h5>
+        <ul class="list-unstyled">
+          <a href="{% url 'customer_support' %}" class="footer-link no-underline">Customer Support</a>
+          <li><a href="{% url 'contact' %}" class="footer-link no-underline">Contact Us</a></li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Footer -->
+<footer class="bg-light text-center py-4">
+  <p>© 2025 Ayurveda Store. All rights reserved.</p>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Search Toggle Script -->
+<script>
+  document.querySelector('.search-icon').addEventListener('click', function() {
+    const searchInput = document.querySelector('.search-input');
+    searchInput.classList.toggle('active');
+    if (searchInput.classList.contains('active')) {
+      searchInput.focus();
+    }
+  });
+</script>
+</body>
+</html>

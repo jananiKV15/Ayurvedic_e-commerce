@@ -1,0 +1,44 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+<div class="container my-5">
+  <h2 class="text-center mb-4">Your Cart</h2>
+  {% if cart_items %}
+  <table class="table table-bordered table-striped">
+    <thead class="table-success">
+      <tr>
+        <th>Product</th>
+        <th style="width: 120px;">Quantity</th>
+        <th>Price</th>
+        <th>Subtotal</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in cart_items %}
+      <tr>
+        <td>{{ item.product.name }}</td>
+        <td>
+          <form method="post" action="{% url 'update_cart' item.product.id %}">
+            {% csrf_token %}
+            <div class="d-flex">
+              <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="form-control form-control-sm me-2">
+              <button type="submit" class="btn btn-sm btn-outline-success">Update</button>
+            </div>
+          </form>
+        </td>
+        <td>₹{{ item.product.price }}</td>
+        <td>₹{{ item.subtotal }}</td>
+        <td>
+          <a href="{% url 'remove_from_cart' item.product.id %}" class="btn btn-sm btn-danger">Remove</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <h4 class="text-end">Total: ₹{{ total }}</h4>
+  {% else %}
+  <p class="text-center">Your cart is empty.</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+<style>
+  .contact-section {
+    padding: 50px 20px;
+    background-color: #f8f9fa;
+  }
+  .contact-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  }
+  .contact-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  .contact-subtitle {
+    font-size: 1rem;
+    margin-bottom: 30px;
+    color: #666;
+  }
+  .contact-info {
+    margin-bottom: 30px;
+  }
+  .contact-info h5 {
+    margin-bottom: 5px;
+    color: #333;
+  }
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+  .contact-form button {
+    background-color: #8bc34a;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+  .contact-form button:hover {
+    background-color: #66c514;
+  }
+</style>
+
+<section class="contact-section">
+  <div class="contact-container">
+    <div class="text-center">
+      <div class="contact-title">Let's Get In Touch</div>
+      <div class="contact-subtitle">We’d love to hear from you. Drop us a message!</div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 contact-info">
+        <h5>Email</h5>
+        <p>support@yourayurveda.com</p>
+        <h5>Phone</h5>
+        <p>+91 9876543210</p>
+        <h5>Address</h5>
+        <p>123 Tirunagar,Madurai,Tamilnadu, India</p>
+        <h5>Working Hours</h5>
+        <p>Monday to Friday: 9 AM – 6 PM</p>
+      </div>
+
+      <div class="col-md-6 contact-form">
+        <form method="POST" action="{% url 'contact' %}">
+          {% csrf_token %}
+          <input type="text" name="name" placeholder="Your Name" required>
+          <input type="email" name="email" placeholder="Your Email" required>
+          <input type="text" name="subject" placeholder="Subject" required>
+          <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
+          <button type="submit">Send Message</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
